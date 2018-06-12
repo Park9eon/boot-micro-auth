@@ -1,12 +1,17 @@
 package com.park9eon.micro.auth.domain;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,6 +20,10 @@ public class User {
     private String password;
     private Date createdDate;
     private Date updatedDate;
+    private Boolean enabled = true;
+    private Boolean accountNonExpired = true;
+    private Boolean accountNonLocked = true;
+    private Boolean credentialsNonExpired = true;
     private Set<UserRole> userRoles;
 
     @Id
@@ -72,10 +81,56 @@ public class User {
         this.updatedDate = updatedDate;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.userRoles == null) {
+            return null;
+        } else {
+            return this.userRoles.stream()
+                    .map(UserRole::getRole)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.accountNonExpired;
+    }
+
+    public void setAccountNonExpired(Boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.accountNonLocked;
+    }
+
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsNonExpired;
+    }
+
+    public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @PrePersist
     public void onPrePersist() {
-        this.createdDate = new Date();
-        this.updatedDate = new Date();
+        this.createdDate = this.updatedDate = new Date();
     }
 
     @PreUpdate
