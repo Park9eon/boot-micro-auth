@@ -25,6 +25,16 @@ public class User implements UserDetails {
     private Boolean credentialsNonExpired = true;
     private Set<Role> roles;
 
+    public User() {
+    }
+
+    public User(Long id, String username, String password, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
@@ -53,8 +63,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
@@ -88,6 +97,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
     }
@@ -150,5 +160,17 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id, username);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                ", enabled=" + enabled +
+                ", roles=" + roles +
+                '}';
     }
 }

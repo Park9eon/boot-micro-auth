@@ -14,6 +14,13 @@ public class Role implements GrantedAuthority {
     private String authority;
     private Set<User> users;
 
+    public Role() {
+    }
+
+    public Role(String authority) {
+        this.authority = authority;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
@@ -41,5 +48,13 @@ public class Role implements GrantedAuthority {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", authority='" + authority + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.park9eon.micro.auth.config
 
 import com.park9eon.micro.auth.service.UserService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
@@ -13,8 +14,12 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 
 @Configuration
 @EnableAuthorizationServer
-open class AuthorizationServerConfig(private val userService: UserService,
-                                private val authenticationManager: AuthenticationManager) : AuthorizationServerConfigurerAdapter() {
+open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
+
+    @Autowired
+    private lateinit var userService: UserService
+    @Autowired
+    private lateinit var authenticationManager: AuthenticationManager
 
     @Bean
     open fun redisTokenStore(): TokenStore {
@@ -26,8 +31,8 @@ open class AuthorizationServerConfig(private val userService: UserService,
         return LettuceConnectionFactory()
     }
 
-    override fun configure(endpoints: AuthorizationServerEndpointsConfigurer?) {
-        endpoints!!.tokenStore(redisTokenStore())
+    override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
+        endpoints.tokenStore(redisTokenStore())
                 .authenticationManager(this.authenticationManager)
                 .userDetailsService(this.userService)
     }

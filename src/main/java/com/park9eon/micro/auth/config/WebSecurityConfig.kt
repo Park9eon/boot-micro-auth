@@ -1,6 +1,7 @@
 package com.park9eon.micro.auth.config
 
 import com.park9eon.micro.auth.service.UserService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -14,7 +15,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @Configuration
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-open class WebSecurityConfig(private val userService: UserService) : WebSecurityConfigurerAdapter() {
+open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+
+    @Autowired
+    private lateinit var userService: UserService
 
     @Bean
     open fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
