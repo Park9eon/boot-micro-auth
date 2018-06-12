@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 public class User implements UserDetails {
@@ -24,7 +23,7 @@ public class User implements UserDetails {
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
     private Boolean credentialsNonExpired = true;
-    private Set<UserRole> userRoles;
+    private Set<Role> roles;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,16 +53,22 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    public Set<UserRole> getUserRoles() {
-        return userRoles;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
+    )
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setUserRoles(Set<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -73,6 +78,7 @@ public class User implements UserDetails {
     }
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdatedDate() {
         return updatedDate;
     }
@@ -83,13 +89,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.userRoles == null) {
-            return null;
-        } else {
-            return this.userRoles.stream()
-                    .map(UserRole::getRole)
-                    .collect(Collectors.toList());
-        }
+        return this.roles;
     }
 
     @Override

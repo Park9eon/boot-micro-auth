@@ -3,6 +3,7 @@ package com.park9eon.micro.auth.domain;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Role implements GrantedAuthority {
@@ -11,6 +12,7 @@ public class Role implements GrantedAuthority {
 
     private Long id;
     private String authority;
+    private Set<User> users;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +32,14 @@ public class Role implements GrantedAuthority {
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
