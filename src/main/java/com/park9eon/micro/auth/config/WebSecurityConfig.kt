@@ -10,10 +10,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 
 @Configuration
-@EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
@@ -26,24 +25,33 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     @Bean
-    override fun authenticationManager(): AuthenticationManager {
+    override fun authenticationManagerBean(): AuthenticationManager {
         return super.authenticationManagerBean()
     }
 
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()
-                .antMatchers("/login", "/oauth/authorize")
-                .permitAll()
+        // @formatter:off
+        http.requestMatchers()
+                .antMatchers("/", "/login**")
                 .and()
-                .authorizeRequests()
+            .authorizeRequests()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin()
+            .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
+            .logout()
+                .logoutUrl("/logout")
+                .and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll()
+        // @formatter:on
     }
 
-    override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth!!.userDetailsService(this.userService)
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService(this.userService)
                 .passwordEncoder(bCryptPasswordEncoder())
     }
 }

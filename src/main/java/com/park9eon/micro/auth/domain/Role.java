@@ -9,6 +9,8 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
 
     private static final long serialVersionUID = 1L;
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     private Long id;
     private String authority;
