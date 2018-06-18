@@ -7,11 +7,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
+import org.springframework.security.oauth2.provider.ClientDetails
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore
 
@@ -24,6 +26,8 @@ open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
     @Autowired
     @Qualifier("authenticationManagerBean")
     private lateinit var authenticationManager: AuthenticationManager
+    @Autowired
+    private lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
 
     @Bean
     open fun tokenStore(): TokenStore {
@@ -38,6 +42,7 @@ open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
     override fun configure(oauthServer: AuthorizationServerSecurityConfigurer) {
         oauthServer.tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()")
+                .passwordEncoder(bCryptPasswordEncoder)
     }
 
     override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
@@ -49,7 +54,7 @@ open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
     override fun configure(clients: ClientDetailsServiceConfigurer) {
         clients.inMemory()
                 .withClient("client")
-                .secret("123123")
+                .secret(this.bCryptPasswordEncoder.encode("123123"))
                 .authorizedGrantTypes("password", "refresh_token")
                 .scopes("read", "write")
                 .authorities("ROLE_CLIENT")

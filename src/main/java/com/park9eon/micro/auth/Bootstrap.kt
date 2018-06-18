@@ -27,7 +27,7 @@ open class Bootstrap : CommandLineRunner {
         this.roleRepository.findByAuthority(Role.ROLE_ADMIN)
                 ?: this.roleRepository.save(Role(Role.ROLE_ADMIN))
 
-        val testUsername = "user@test.com"
+        val testUsername = "user"
         val testPassword = "123123"
         val user: User? = this.userService.getOneByUsername(testUsername)
         if (user == null) {
