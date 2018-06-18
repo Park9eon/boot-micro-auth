@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -17,12 +18,17 @@ import javax.validation.Valid
 open class UserController {
 
     @Autowired
-    lateinit var userService: UserService
+    private lateinit var userService: UserService
 
     @GetMapping
     fun index(@RequestParam(required = false, defaultValue = "0") offset: Int,
               @RequestParam(required = false, defaultValue = "10") size: Int): Page<User> {
         return this.userService.getAll(offset, size)
+    }
+
+    @GetMapping
+    fun me(@AuthenticationPrincipal user: User): User {
+        return user
     }
 
     @GetMapping("/{id}")

@@ -8,5 +8,14 @@
 POST http://localhost:8080/oauth/token?scope=read&grant_type=password&username=user&password=123123
 Authorization: Basic Y2xpZW50OjEyMzEyMw==
 
+###
+
+GET http://localhost:8080/user
+Authorization: Bearer 11808e33-b64b-46bc-99a1-07b36f6fca22
+
+###
+
+GET http://localhost:8080/user/1
+Authorization: Bearer 11808e33-b64b-46bc-99a1-07b36f6fca22
 
 ###

@@ -1,5 +1,7 @@
 package com.park9eon.micro.auth.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,6 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -54,6 +57,7 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    @JsonIgnore
     @Column(nullable = false)
     public String getPassword() {
         return password;
@@ -63,6 +67,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
@@ -76,6 +81,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    @JsonIgnore
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getCreatedDate() {
@@ -86,6 +92,7 @@ public class User implements UserDetails {
         this.createdDate = createdDate;
     }
 
+    @JsonIgnore
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdatedDate() {
@@ -98,11 +105,13 @@ public class User implements UserDetails {
 
     @Override
     @Transient
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
@@ -112,6 +121,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return this.accountNonLocked;
     }
@@ -121,6 +131,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return this.credentialsNonExpired;
     }
@@ -130,6 +141,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return this.enabled;
     }

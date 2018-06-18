@@ -13,6 +13,8 @@ open class ResourceServerConfig : ResourceServerConfigurerAdapter() {
         http.authorizeRequests()
                 .antMatchers("/oauth/token")
                 .permitAll()
+                .anyRequest()
+                .authenticated()
         // @formatter:on
     }
 }
