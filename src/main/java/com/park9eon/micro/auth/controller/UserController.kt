@@ -21,18 +21,18 @@ open class UserController {
     private lateinit var userService: UserService
 
     @GetMapping
-    fun index(@RequestParam(required = false, defaultValue = "0") offset: Int,
+    fun getAll(@RequestParam(required = false, defaultValue = "0") offset: Int,
               @RequestParam(required = false, defaultValue = "10") size: Int): Page<User> {
         return this.userService.getAll(offset, size)
     }
 
     @GetMapping
-    fun me(@AuthenticationPrincipal user: User): User {
+    fun getMe(@AuthenticationPrincipal user: User): User {
         return user
     }
 
     @GetMapping("/{id}")
-    fun show(@PathVariable id: Long): User? {
+    fun getOne(@PathVariable id: Long): User? {
         return this.userService.getOne(id)
     }
 

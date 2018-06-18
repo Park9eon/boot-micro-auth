@@ -26,19 +26,15 @@ sourceCompatibility = 1.8
 
 compileKotlin {
 	kotlinOptions {
-		kotlinOptions {
-			freeCompilerArgs = ["-Xjsr305=strict", "-Xenable-jvm-default"]
-			jvmTarget = "1.8"
-		}
+		freeCompilerArgs = ["-Xjsr305=strict", "-Xenable-jvm-default"]
+		jvmTarget = "1.8"
 	}
 }
 
 compileTestKotlin {
 	kotlinOptions {
-		kotlinOptions {
-			freeCompilerArgs = ["-Xjsr305=strict", "-Xenable-jvm-default"]
-			jvmTarget = "1.8"
-		}
+		freeCompilerArgs = ["-Xjsr305=strict", "-Xenable-jvm-default"]
+		jvmTarget = "1.8"
 	}
 }
 
@@ -50,11 +46,13 @@ repositories {
 dependencies {
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	compile("org.jetbrains.kotlin:kotlin-reflect")
+	compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 	// Spring
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	compile("org.springframework.cloud:spring-cloud-starter-oauth2")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile("org.springframework.boot:spring-boot-starter-web")
-	compile("org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}")
 	compile("org.springframework.session:spring-session-data-redis")
 	compile("mysql:mysql-connector-java")
 	compile("io.lettuce:lettuce-core:5.0.2.RELEASE")
