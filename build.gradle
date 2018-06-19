@@ -41,6 +41,7 @@ compileTestKotlin {
 repositories {
 	mavenCentral()
 	maven { url "https://repo.spring.io/milestone" }
+	maven { url 'https://repo.spring.io/libs-snapshot' }
 }
 
 dependencies {
@@ -50,9 +51,11 @@ dependencies {
 	// Spring
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	compile("org.springframework.cloud:spring-cloud-starter-oauth2")
+	compile("org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile("org.springframework.boot:spring-boot-starter-web")
+	compile("org.springframework.boot:spring-boot-starter-actuator")
 	compile("org.springframework.session:spring-session-data-redis")
 	compile("mysql:mysql-connector-java")
 	compile("io.lettuce:lettuce-core:5.0.2.RELEASE")
@@ -67,5 +70,6 @@ dependencies {
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-netflix:${springCloudNetflixVersion}"
 	}
 }

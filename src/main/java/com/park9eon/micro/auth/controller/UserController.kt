@@ -26,7 +26,7 @@ open class UserController {
         return this.userService.getAll(offset, size)
     }
 
-    @GetMapping
+    @GetMapping("/me")
     fun getMe(@AuthenticationPrincipal user: User): User {
         return user
     }

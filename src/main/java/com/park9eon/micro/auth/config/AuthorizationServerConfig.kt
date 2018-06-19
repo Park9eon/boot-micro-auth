@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -14,7 +15,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.ClientDetails
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices
 import org.springframework.security.oauth2.provider.token.TokenStore
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore
 
 @Configuration
@@ -30,8 +33,27 @@ open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
     private lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
 
     @Bean
+    open fun accessTokenConverter(): JwtAccessTokenConverter {
+        return JwtAccessTokenConverter()
+                .apply {
+                    this.setSigningKey("123")
+                }
+    }
+
+    @Bean
     open fun tokenStore(): TokenStore {
         return RedisTokenStore(connectionFactory())
+    }
+
+    @Bean
+    @Primary
+    open fun tokenServices(): DefaultTokenServices {
+        return DefaultTokenServices()
+                .apply {
+                    this.setTokenStore(tokenStore())
+                    this.setTokenEnhancer(accessTokenConverter())
+                    this.setSupportRefreshToken(true)
+                }
     }
 
     @Bean
@@ -47,16 +69,18 @@ open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
 
     override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
         endpoints.tokenStore(tokenStore())
+                .tokenEnhancer(accessTokenConverter())
                 .authenticationManager(this.authenticationManager)
                 .userDetailsService(this.userService)
     }
 
     override fun configure(clients: ClientDetailsServiceConfigurer) {
         clients.inMemory()
-                .withClient("client")
+                .withClient("book")
                 .secret(this.bCryptPasswordEncoder.encode("123123"))
                 .authorizedGrantTypes("password", "refresh_token")
                 .scopes("read", "write")
+                .autoApprove(true)
                 .authorities("ROLE_CLIENT")
     }
 
