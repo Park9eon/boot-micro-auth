@@ -1,11 +1,10 @@
-package com.park9eon.micro.auth.domain;
+package com.park9eon.micro.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
 import java.util.Set;
 
-@Entity
 public class Role implements GrantedAuthority {
 
     private static final long serialVersionUID = 1L;
@@ -23,8 +22,6 @@ public class Role implements GrantedAuthority {
         this.authority = authority;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -34,7 +31,6 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
-    @Column(unique = true, updatable = false, nullable = false)
     public String getAuthority() {
         return authority;
     }
@@ -43,7 +39,7 @@ public class Role implements GrantedAuthority {
         this.authority = authority;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    @JsonIgnore
     public Set<User> getUsers() {
         return users;
     }

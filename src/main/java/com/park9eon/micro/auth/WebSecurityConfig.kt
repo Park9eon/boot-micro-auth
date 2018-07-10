@@ -1,25 +1,21 @@
-package com.park9eon.micro.auth.config
+package com.park9eon.micro.auth
 
-import com.park9eon.micro.auth.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 
 @Configuration
 @EnableWebSecurity
 open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
-    private lateinit var userService: UserService
+    private lateinit var userClient: UserClient
 
     @Bean
     open fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
@@ -38,12 +34,12 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 .authenticated()
                 .and()
             .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .disable()
         // @formatter:on
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(this.userService)
+        auth.userDetailsService(this.userClient)
                 .passwordEncoder(bCryptPasswordEncoder())
     }
 }

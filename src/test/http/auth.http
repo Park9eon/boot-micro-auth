@@ -5,20 +5,8 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
+GET http://localhost:8081/user
+###
 POST http://localhost:8080/oauth/token?scope=read&grant_type=password&username=user&password=123123
-Authorization: Basic Ym9vazoxMjMxMjM=
-###
-
-POST http://localhost:8080/oauth/token?grant_type=refresh_token&refresh_token=490dcd63-9ebd-4932-ac5d-025836f81df3
-Authorization: Basic Ym9vazoxMjMxMjM=
-###
-
-GET http://localhost:8080/user
-Authorization: Bearer 11808e33-b64b-46bc-99a1-07b36f6fca22
-
-###
-
-GET http://localhost:8080/user/1
-Authorization: Bearer 11808e33-b64b-46bc-99a1-07b36f6fca22
-
+Authorization: Basic dXNlcjoxMjMxMjM=
 ###
