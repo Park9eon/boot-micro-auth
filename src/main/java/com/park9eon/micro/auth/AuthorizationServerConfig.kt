@@ -23,7 +23,7 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
 
     @Autowired
-    private lateinit var userClient: UserClient
+    private lateinit var userDetailsService: UserDetailsService
     @Autowired
     @Qualifier("authenticationManagerBean")
     private lateinit var authenticationManager: AuthenticationManager
@@ -69,7 +69,7 @@ open class AuthorizationServerConfig : AuthorizationServerConfigurerAdapter() {
         endpoints.tokenStore(tokenStore())
                 .tokenEnhancer(accessTokenConverter())
                 .authenticationManager(this.authenticationManager)
-                .userDetailsService(this.userClient)
+                .userDetailsService(this.userDetailsService)
     }
 
     override fun configure(clients: ClientDetailsServiceConfigurer) {

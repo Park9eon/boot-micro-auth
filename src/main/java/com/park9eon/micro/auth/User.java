@@ -1,5 +1,6 @@
 package com.park9eon.micro.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -83,7 +84,8 @@ public class User implements UserDetails {
         this.updatedDate = updatedDate;
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    @Override
+    public Collection<Role> getAuthorities() {
         return this.roles;
     }
 
